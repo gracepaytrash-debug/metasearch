@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>widget preview</title>
+    <link rel="icon" href="/s/favicon.svg" />
+    <link rel="stylesheet" href="/search.css" />
+    <style>
+      body {
+        background: var(--bg);
+        color: var(--text);
+        flex-direction: row;
+        height: 100vh;
+        overflow: hidden;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+      .wp-side {
+        width: 264px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid var(--line);
+        height: 100vh;
+      }
+      .wp-top {
+        padding: 16px 14px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .wp-title {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin: 0 2px;
+      }
+      .wp-count {
+        color: var(--muted);
+        font-weight: 450;
+        font-size: 0.8rem;
+        font-variant-numeric: tabular-nums;
+      }
+      .wp-filter {
+        width: 100%;
+        font: inherit;
+        font-size: 0.875rem;
+        color: var(--text);
+        background: var(--surface0);
+        border: 0;
+        border-radius: var(--r-chip);
+        padding: 8px 10px;
+        outline: 2px solid transparent;
+        transition: outline-color var(--duration-base) var(--ease-out);
+      }
+      .wp-filter:focus-visible {
+        outline-color: color-mix(in srgb, var(--blue) 60%, transparent);
+      }
+      .wp-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 4px 8px 24px;
+        scrollbar-width: thin;
+      }
+      .wp-group {
+        margin-top: 14px;
+      }
+      .wp-group[hidden] {
+        display: none;
+      }
+      .wp-group h3 {
+        font-size: 0.75rem;
+        font-weight: 550;
+        color: var(--muted);
+        margin: 0 8px 4px;
+      }
+      .wp-item {
+        display: block;
+        width: 100%;
+        text-align: left;
+        font: inherit;
+        font-size: 0.85rem;
+        color: var(--subtext);
+        background: transparent;
+        border: 0;
+        border-radius: 8px;
+        padding: 6px 8px;
+        cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: scale 200ms var(--ease-out);
+      }
+      .wp-item[hidden] {
+        display: none;
+      }
+      .wp-item:active {
+        scale: 0.98;
+      }
+      .wp-item[aria-current="true"] {
+        background: var(--surface0);
+        color: var(--text);
+      }
+      @media (hover: hover) {
+        .wp-item:hover {
+          background: color-mix(in srgb, var(--surface0) 60%, transparent);
+          color: var(--text);
+        }
+      }
+      .wp-item:focus-visible {
+        outline: 2px solid color-mix(in srgb, var(--blue) 60%, transparent);
+        outline-offset: -2px;
+      }
+      .wp-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+      }
+      .wp-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--line);
+        flex-wrap: wrap;
+      }
+      .wp-q {
+        flex: 1 1 260px;
+        font: inherit;
+        font-size: 0.9rem;
+        color: var(--text);
+        background: var(--surface0);
+        border: 0;
+        border-radius: var(--r-chip);
+        padding: 9px 12px;
+        outline: 2px solid transparent;
+        transition: outline-color var(--duration-base) var(--ease-out);
+      }
+      .wp-q:focus-visible {
+        outline-color: color-mix(in srgb, var(--blue) 60%, transparent);
+      }
+      .wp-seg,
+      .wp-dots {
+        border: 0;
+        margin: 0;
+        min-inline-size: 0;
+      }
+      .wp-seg {
+        display: flex;
+        background: var(--surface0);
+        border-radius: var(--r-chip);
+        padding: 3px;
+        gap: 2px;
+      }
+      .wp-seg button,
+      .wp-btn {
+        font: inherit;
+        font-size: 0.8rem;
+        color: var(--subtext);
+        background: transparent;
+        border: 0;
+        border-radius: 7px;
+        padding: 5px 10px;
+        cursor: pointer;
+        transition: scale 200ms var(--ease-out);
+      }
+      .wp-btn {
+        background: var(--surface0);
+        border-radius: var(--r-chip);
+        padding: 8px 12px;
+      }
+      .wp-seg button:active,
+      .wp-btn:active {
+        scale: 0.96;
+      }
+      .wp-seg button[aria-pressed="true"] {
+        background: var(--surface1);
+        color: var(--text);
+      }
+      @media (hover: hover) {
+        .wp-seg button:hover,
+        .wp-btn:hover {
+          color: var(--text);
+        }
+      }
+      .wp-seg button:focus-visible,
+      .wp-btn:focus-visible {
+        outline: 2px solid color-mix(in srgb, var(--blue) 60%, transparent);
+        outline-offset: 1px;
+      }
+      .wp-dots {
+        display: flex;
+        gap: 6px;
+        padding: 0 4px;
+      }
+      .wp-dot {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 0;
+        background: var(--c);
+        cursor: pointer;
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+        transition:
+          scale 200ms var(--ease-out),
+          outline-color var(--duration-base) var(--ease-out);
+      }
+      .wp-dot:active {
+        scale: 0.9;
+      }
+      .wp-dot[aria-pressed="true"] {
+        outline-color: var(--c);
+      }
+      .wp-stage {
+        flex: 1;
+        overflow-y: auto;
+        padding: 32px 20px 80px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .wp-frame {
+        width: 100%;
+        max-width: 672px;
+        transition: max-width 320ms var(--ease-out);
+      }
+      .wp-stage[data-width="phone"] .wp-frame {
+        max-width: 375px;
+      }
+      .wp-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin: 0 2px 10px;
+        gap: 12px;
+      }
+      .wp-miss {
+        padding: 28px;
+        border-radius: var(--r-card);
+        background: var(--surface0);
+        color: var(--subtext);
+        font-size: 0.9rem;
+        text-align: center;
+        text-wrap: pretty;
+      }
+      .wp-grid {
+        width: 100%;
+        max-width: 1500px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 28px 24px;
+        align-items: start;
+      }
+      .wp-cell h4 {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--muted);
+        margin: 0 2px 8px;
+        cursor: pointer;
+        width: fit-content;
+      }
+      @media (hover: hover) {
+        .wp-cell h4:hover {
+          color: var(--text);
+        }
+      }
+      @media (max-width: 760px) {
+        body {
+          flex-direction: column;
+          height: auto;
+          overflow: auto;
+        }
+        .wp-side {
+          width: 100%;
+          height: auto;
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+        .wp-list {
+          max-height: 40vh;
+        }
+        .wp-main,
+        .wp-stage {
+          height: auto;
+          overflow: visible;
+        }
+        .wp-grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <aside class="wp-side">
+      <div class="wp-top">
+        <div class="wp-title">
+          <span>widgets</span><span class="wp-count" id="count"></span>
+        </div>
+        <label class="sr-only" for="filter">filter widgets</label>
+        <input
+          class="wp-filter"
+          id="filter"
+          type="search"
+          placeholder="filter…"
+          autocomplete="off"
+        />
+      </div>
+      <nav class="wp-list" id="list"></nav>
+    </aside>
+    <main class="wp-main">
+      <div class="wp-bar">
+        <label class="sr-only" for="q">query</label>
+        <input
+          class="wp-q"
+          id="q"
+          type="search"
+          placeholder="type any query…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="wp-btn" id="remount" type="button">remount</button>
+        <button class="wp-btn" id="all" type="button">show all</button>
+        <fieldset class="wp-seg" id="width" aria-label="width">
+          <button type="button" data-v="desktop" aria-pressed="true">
+            desktop
+          </button>
+          <button type="button" data-v="phone" aria-pressed="false">
+            phone
+          </button>
+        </fieldset>
+        <fieldset class="wp-seg" id="theme" aria-label="theme">
+          <button type="button" data-v="dark" aria-pressed="true">dark</button>
+          <button type="button" data-v="amoled" aria-pressed="false">
+            amoled
+          </button>
+        </fieldset>
+        <fieldset class="wp-dots" id="accent" aria-label="accent">
+          <button class="wp-dot" type="button" data-v="teto" style="--c: #89b4fa" aria-label="teto accent" aria-pressed="true"></button>
+          <button class="wp-dot" type="button" data-v="spongebob" style="--c: #f4c842" aria-label="spongebob accent" aria-pressed="false"></button>
+          <button class="wp-dot" type="button" data-v="gumi" style="--c: #a6e3a1" aria-label="gumi accent" aria-pressed="false"></button>
+          <button class="wp-dot" type="button" data-v="miku" style="--c: #4fd6c6" aria-label="miku accent" aria-pressed="false"></button>
+          <button class="wp-dot" type="button" data-v="ralsei" style="--c: #3ecf8e" aria-label="ralsei accent" aria-pressed="false"></button>
+        </fieldset>
+      </div>
+      <div class="wp-stage" id="stage"></div>
+    </main>
+    <script type="module">
+      import { __widgetCount, renderLocalWidgets } from "/s/widgets.js";
+
+      const groups = __GROUPS__;
+      const all = Object.values(groups).flat();
+      const $ = (id) => document.getElementById(id);
+      const list = $("list");
+      const stage = $("stage");
+      const q = $("q");
+      const root = document.documentElement;
+      const pref = (() => {
+        try {
+          return JSON.parse(localStorage.getItem("wp-pref")) || {};
+        } catch {
+          return {};
+        }
+      })();
+      const save = () => {
+        try {
+          localStorage.setItem("wp-pref", JSON.stringify(pref));
+        } catch {}
+      };
+
+      $("count").textContent = `${__widgetCount} registered`;
+
+      const items = [];
+      for (const [name, queries] of Object.entries(groups)) {
+        const g = document.createElement("section");
+        g.className = "wp-group";
+        const h = document.createElement("h3");
+        h.textContent = name;
+        g.append(h);
+        for (const query of queries) {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "wp-item";
+          b.textContent = query;
+          b.title = query;
+          b.onclick = () => go(query);
+          g.append(b);
+          items.push({ b, g, query });
+        }
+        list.append(g);
+      }
+
+      $("filter").oninput = (e) => {
+        const f = e.target.value.trim().toLowerCase();
+        for (const { b, query } of items)
+          b.hidden = f && !query.toLowerCase().includes(f);
+        for (const g of list.children)
+          g.hidden = ![...g.querySelectorAll(".wp-item")].some((b) => !b.hidden);
+      };
+
+      const mark = (query) => {
+        for (const { b } of items) {
+          const on = b.textContent === query;
+          b.setAttribute("aria-current", String(on));
+          if (on) b.scrollIntoView({ block: "nearest" });
+        }
+      };
+
+      const single = (query) => {
+        stage.replaceChildren();
+        const frame = document.createElement("div");
+        frame.className = "wp-frame";
+        const meta = document.createElement("div");
+        meta.className = "wp-meta";
+        const w = renderLocalWidgets(query);
+        meta.textContent = query;
+        frame.append(meta);
+        if (w) frame.append(w);
+        else {
+          const m = document.createElement("div");
+          m.className = "wp-miss";
+          m.textContent = "no local widget matches this query. it may be a server rich result instead.";
+          frame.append(m);
+        }
+        stage.append(frame);
+      };
+
+      const grid = () => {
+        stage.replaceChildren();
+        const g = document.createElement("div");
+        g.className = "wp-grid";
+        for (const query of all) {
+          const cell = document.createElement("div");
+          cell.className = "wp-cell";
+          const h = document.createElement("h4");
+          h.textContent = query;
+          h.onclick = () => go(query);
+          cell.append(h);
+          const w = renderLocalWidgets(query);
+          if (w) cell.append(w);
+          g.append(cell);
+        }
+        stage.append(g);
+        mark(null);
+      };
+
+      const render = () => {
+        const p = new URLSearchParams(location.hash.slice(1));
+        const query = p.get("q");
+        if (!query) return grid();
+        q.value = query;
+        mark(query);
+        single(query);
+      };
+
+      const go = (query) => {
+        location.hash = query ? `q=${encodeURIComponent(query)}` : "";
+      };
+
+      addEventListener("hashchange", render);
+      q.onkeydown = (e) => {
+        if (e.key === "Enter") go(q.value.trim());
+      };
+      $("remount").onclick = render;
+      $("all").onclick = () => {
+        q.value = "";
+        go("");
+      };
+
+      const seg = (id, key, apply) => {
+        const el = $(id);
+        const set = (v) => {
+          for (const b of el.querySelectorAll("button"))
+            b.setAttribute("aria-pressed", String(b.dataset.v === v));
+          apply(v);
+          pref[key] = v;
+          save();
+        };
+        el.onclick = (e) => {
+          const b = e.target.closest("button");
+          if (b) set(b.dataset.v);
+        };
+        if (pref[key]) set(pref[key]);
+      };
+      seg("width", "width", (v) => {
+        stage.dataset.width = v;
+      });
+      seg("theme", "theme", (v) => {
+        if (v === "amoled") root.dataset.theme = "amoled";
+        else delete root.dataset.theme;
+      });
+      seg("accent", "accent", (v) => {
+        if (v === "teto") delete root.dataset.mascot;
+        else root.dataset.mascot = v;
+      });
+
+      const legacy = new URLSearchParams(location.search).get("q");
+      if (legacy) go(legacy);
+      else if (!location.hash) go(all[0]);
+      else render();
+    </script>
+  </body>
+</html>

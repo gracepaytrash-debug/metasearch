@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      try {
+        const d = document.documentElement,
+          L = localStorage;
+        const a = L.getItem("ms-accent");
+        if (a) d.style.setProperty("--blue", a);
+        if (L.getItem("ms-theme") === "amoled") d.dataset.theme = "amoled";
+        const m = L.getItem("ms-mascot");
+        if (m && m !== "teto") {
+          d.dataset.mascot = m;
+          addEventListener("DOMContentLoaded", () => {
+            const s = `/s/${m}.webp`,
+              f = document.querySelector("link[rel~=icon]");
+            if (f) f.href = s;
+            document.querySelectorAll('img[src*="teto"]').forEach((i) => {
+              i.src = s;
+              i.style.objectFit = "contain";
+            });
+          });
+        }
+      } catch {}
+    </script>
+    <script
+      async
+      data-domain="search.tiago.zip"
+      src="https://palantir.estrogen.delivery/Pn7xQk2.privacy.js"
+    ></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>search!</title>
+    <meta name="theme-color" content="#1F1E2E" />
+    <meta property="og:color" content="#89B4FA" />
+    <link rel="icon" href="/s/teto.png" />
+    <style>
+      * {
+        box-sizing: border-box;
+        min-width: 0;
+        text-underline-offset: 3px;
+        -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+      }
+
+      :root {
+        color-scheme: dark;
+        interpolate-size: allow-keywords;
+        font-family:
+          InstrumentSans,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Oxygen,
+          Ubuntu,
+          Cantarell,
+          "Open Sans",
+          "Helvetica Neue",
+          sans-serif;
+
+        --text: #cdd6f4;
+        --bg: #1f1e2e;
+        --surface0: #313244;
+        --surface1: #45475a;
+        --subtext: #a6adc8;
+        --blue: #89b4fa;
+        --muted: #7f849c;
+        --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+        --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      :root[data-theme="amoled"] {
+        --bg: #000;
+        --surface0: #131318;
+        --surface1: #222228;
+      }
+
+      :root[data-mascot="spongebob"] {
+        --blue: #f4c842;
+      }
+      :root[data-mascot="gumi"] {
+        --blue: #a6e3a1;
+      }
+      :root[data-mascot="miku"] {
+        --blue: #4fd6c6;
+      }
+      :root[data-mascot="ralsei"] {
+        --blue: #3ecf8e;
+      }
+
+      html {
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-text-size-adjust: 100%;
+        -moz-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+        background-color: var(--bg);
+        color: var(--text);
+        scrollbar-gutter: stable;
+        overflow-x: hidden;
+      }
+
+      input,
+      textarea,
+      select {
+        field-sizing: content;
+      }
+
+      body {
+        display: flex;
+        width: 100%;
+        margin: 0px;
+        padding: 0px;
+        min-height: 100dvh;
+        flex-direction: column;
+        overflow-x: hidden;
+      }
+
+      header {
+        max-width: 1136px;
+        margin: 0px auto;
+        width: 100%;
+        padding-left: 16px;
+        padding-right: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 12vh;
+
+        .teto {
+          margin-bottom: 2em;
+          user-select: none;
+          transition: scale 260ms var(--ease-spring);
+
+          &.is-on {
+            cursor: pointer;
+            scale: 1.08;
+
+            &:active {
+              scale: 0.94;
+              transition-duration: 160ms;
+            }
+          }
+        }
+
+        form {
+          width: 100%;
+          max-width: 500px;
+        }
+      }
+
+      .search-container {
+        display: flex;
+        gap: 24px;
+
+        .search-bar {
+          height: 42px;
+          background-color: var(--surface0);
+          border: 1px solid #7f849c78;
+          width: 100%;
+          border-radius: 10px;
+          display: flex;
+          max-width: 672px;
+          cursor: text;
+          transition:
+            border-color 150ms var(--ease-out),
+            box-shadow 200ms var(--ease-out);
+
+          &:has(input:focus) {
+            border-color: #bac2de;
+            outline: rgb(186, 194, 222) 0.5px solid;
+          }
+
+          input {
+            background-color: transparent;
+            border: none;
+            height: 100%;
+            width: 100%;
+            padding: 0 12px;
+            font-size: 1em;
+            font-family: inherit;
+            color: var(--text);
+            caret-color: var(--blue);
+
+            &:focus {
+              outline: none;
+            }
+
+            &::placeholder {
+              color: var(--muted);
+              user-select: none;
+            }
+          }
+
+          button {
+            aspect-ratio: 1;
+            height: 100%;
+            border-radius: 8px;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: var(--subtext);
+            transform: scale(0.9);
+            justify-content: center;
+            transition:
+              color 100ms var(--ease-out),
+              scale 200ms var(--ease-out);
+
+            svg {
+              width: 20px;
+              height: 28px;
+            }
+
+            &:active {
+              scale: 0.92;
+            }
+
+            &:focus-visible {
+              outline: 2px solid var(--blue);
+              outline-offset: -2px;
+            }
+          }
+
+          &:has(input:focus) button {
+            color: var(--text);
+          }
+        }
+      }
+
+      @media (hover: hover) {
+        .search-container .search-bar:not(:has(input:focus)):hover {
+          border-color: #7f849cb0;
+        }
+
+        .search-container .search-bar button:hover {
+          color: var(--text);
+        }
+      }
+
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px 16px;
+        font-size: 15px;
+        margin-top: 16px;
+        color: #cdd6f769;
+        user-select: none;
+        line-height: 1.6;
+
+        a {
+          color: var(--text);
+          text-decoration: underline;
+          text-decoration-color: transparent;
+          text-decoration-thickness: 1px;
+          text-underline-offset: 4px;
+          text-decoration-skip-ink: auto;
+          border-radius: 4px;
+          transition: text-decoration-color 150ms var(--ease-out);
+
+          &:focus-visible {
+            outline: 2px solid var(--blue);
+            outline-offset: 2px;
+          }
+        }
+      }
+
+      @media (hover: hover) {
+        .links a:hover {
+          text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+        }
+      }
+
+      .meowing-badge {
+        display: flex;
+        align-items: center;
+        border: 1px solid #7f849c78;
+        padding: 5px 8px;
+        border-radius: 10px;
+        margin-top: 3em;
+        color: var(--text);
+        cursor: pointer;
+        padding-right: 13px;
+        text-decoration: none;
+        transition:
+          border-color 150ms var(--ease-out),
+          scale 200ms var(--ease-out);
+      }
+
+      @media (hover: hover) {
+        .meowing-badge:hover {
+          border-color: #7f849c;
+        }
+      }
+
+      .meowing-badge:active {
+        scale: 0.97;
+      }
+
+      @font-face {
+        font-family: "InstrumentSans";
+        font-display: swap;
+        src: url("/s/inter-var-v4.woff2");
+      }
+
+      @view-transition {
+        navigation: auto;
+      }
+
+      ::view-transition-old(root),
+      ::view-transition-new(root) {
+        animation-duration: 0.1s;
+      }
+    </style>
+    <link rel="preload" href="/s/inter-var-v4.woff2" as="font" type="font/woff2" crossorigin />
+    <meta name="color-scheme" content="dark" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1" />
+    <meta name="robots" content="index,follow" />
+    <link
+      title="search.tiago.zip"
+      href="/s/opensearch.xml"
+      rel="search"
+      type="application/opensearchdescription+xml"
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="title" content="search!" />
+    <meta
+      name="description"
+      content="search the web without AI slop. pretty, fast, privacy-friendly metasearch engine."
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://search.tiago.zip/" />
+    <meta property="og:title" content="search!" />
+    <meta
+      property="og:description"
+      content="search the web without AI slop. pretty, fast, privacy-friendly metasearch engine."
+    />
+    <meta property="og:image" content="https://search.tiago.zip/s/og.png" />
+
+    <meta name="twitter:url" content="https://search.tiago.zip/" />
+    <meta name="twitter:image:alt" content="screenshot of search.tiago.zip" />
+    <meta name="twitter:site" content="@tiagozip_" />
+    <meta name="twitter:creator" content="@tiagozip_" />
+    <meta name="twitter:title" content="search!" />
+    <meta
+      name="twitter:description"
+      content="search the web without AI slop. pretty, fast, privacy-friendly metasearch engine."
+    />
+    <meta name="twitter:image" content="https://search.tiago.zip/s/og.png" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+  </head>
+  <body>
+    <header>
+      <img
+        src="/s/teto.webp"
+        width="110"
+        height="110"
+        alt="teto"
+        class="teto"
+        draggable="false"
+      />
+      <form action="/">
+        <div class="search-container">
+          <div class="search-bar">
+            <input class="searchinput" name="q" placeholder="search…" aria-label="search" autofocus />
+
+            <button title="search!" type="submit">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                class="w-6 h-6"
+                focusable="false"
+                style="fill: currentColor"
+              >
+                <path
+                  d="m18.031 16.617 4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617m-2.006-.742A6.98 6.98 0 0 0 18 11c0-3.867-3.133-7-7-7s-7 3.133-7 7 3.133 7 7 7a6.98 6.98 0 0 0 4.875-1.975z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </form>
+      <div class="links">
+        <a href="https://github.com/tiagozip/metasearch" target="_blank">self-host</a>
+        <a href="/about" target="_blank">about</a>
+        <a href="/api" target="_blank">api</a>
+        <a href="/bangs" target="_blank">bangs</a>
+        <a href="/about#settings" id="open-settings">settings</a>
+        <span>cf %%colo%%</span>
+      </div>
+
+      <script>
+        if (location.hostname !== "search.tiago.zip" && location.hostname !== "localhost") {
+          // removing or hiding this notice violates the CPAL 1.0
+          // attribution clause this project is licensed under.
+          const badge = document.createElement("a");
+          badge.href = "https://github.com/tiagozip/metasearch";
+          badge.target = "_blank";
+          badge.rel = "noopener noreferrer";
+          badge.classList.add("meowing-badge");
+          badge.innerHTML = `
+          <img src="/s/teto.webp" alt="teto" draggable="false" style="width: 32px;">
+          <span style="margin-left: 12px;">unofficial mirror of</span><b style="margin-left: 4px; font-weight: 500; color: white;">metasearch</b>
+          `;
+          document.querySelector("header").appendChild(badge);
+        }
+      </script>
+    </header>
+
+    <script>
+      document.querySelector("input.searchinput").addEventListener("input", () => {
+        document.title = document.querySelector("input").value || "search!";
+      });
+
+      (() => {
+        const teto = document.querySelector(".teto");
+        if (!teto) return;
+
+        const hitCanvas = document.createElement("canvas");
+        const hitCtx = hitCanvas.getContext("2d", { willReadFrequently: true });
+        const setupHit = () => {
+          hitCanvas.width = teto.naturalWidth;
+          hitCanvas.height = teto.naturalHeight;
+          hitCtx.drawImage(teto, 0, 0);
+        };
+        if (teto.complete && teto.naturalWidth) setupHit();
+        else teto.addEventListener("load", setupHit, { once: true });
+
+        const isOnPlushie = (e) => {
+          if (!hitCanvas.width) return false;
+          const rect = teto.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * hitCanvas.width;
+          const y = ((e.clientY - rect.top) / rect.height) * hitCanvas.height;
+          if (x < 0 || y < 0 || x >= hitCanvas.width || y >= hitCanvas.height) return false;
+          try {
+            return hitCtx.getImageData(x | 0, y | 0, 1, 1).data[3] > 30;
+          } catch {
+            return true;
+          }
+        };
+
+        teto.addEventListener("pointermove", (e) => {
+          teto.classList.toggle("is-on", isOnPlushie(e));
+        });
+        teto.addEventListener("pointerleave", () => {
+          teto.classList.remove("is-on");
+        });
+
+        const canvas = document.createElement("canvas");
+        canvas.style.cssText =
+          "position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999";
+        document.body.appendChild(canvas);
+
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+        const mascot = document.documentElement.dataset.mascot;
+        img.src = mascot ? `/s/${mascot}.webp` : "/s/teto.webp";
+
+        const dpr = window.devicePixelRatio || 1;
+        const resize = () => {
+          canvas.width = window.innerWidth * dpr;
+          canvas.height = window.innerHeight * dpr;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        };
+        resize();
+        window.addEventListener("resize", resize);
+
+        const particles = [];
+        let raf = 0;
+        let last = 0;
+
+        const tick = (now) => {
+          const dt = last ? Math.min((now - last) / 1000, 0.05) : 0;
+          last = now;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.vy += 1400 * dt;
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.rotation += p.spin * dt;
+            p.life -= dt;
+
+            if (p.life <= 0 || p.y > window.innerHeight + 200) {
+              particles.splice(i, 1);
+              continue;
+            }
+
+            const alpha = Math.min(1, p.life / 0.6);
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rotation);
+            ctx.drawImage(img, -p.size / 2, -p.size / 2, p.size, p.size);
+            ctx.restore();
+          }
+
+          if (particles.length) {
+            raf = requestAnimationFrame(tick);
+          } else {
+            raf = 0;
+            last = 0;
+          }
+        };
+
+        const spawn = () => {
+          const rect = teto.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const count = window.innerWidth < 600 ? 18 : 32;
+
+          for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 300 + Math.random() * 600;
+            particles.push({
+              x: cx + (Math.random() - 0.5) * 20,
+              y: cy + (Math.random() - 0.5) * 20,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed - 400,
+              rotation: Math.random() * Math.PI * 2,
+              spin: (Math.random() - 0.5) * 12,
+              size: 30 + Math.random() * 40,
+              life: 1.8 + Math.random() * 0.8,
+            });
+          }
+
+          if (!raf) raf = requestAnimationFrame(tick);
+        };
+
+        teto.addEventListener("click", (e) => {
+          if (!isOnPlushie(e)) return;
+          spawn();
+        });
+      })();
+    </script>
+    <script>
+      document.getElementById("open-settings").addEventListener("click", (e) => {
+        e.preventDefault();
+        import("/s/settings.js").then((m) => m.openSettings());
+      });
+    </script>
+    <script src="/s/omnibox.js" type="module"></script>
+  </body>
+
+</html>

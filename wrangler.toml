@@ -1,0 +1,27 @@
+name = "metasearch"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+html_handling = "none"
+not_found_handling = "none"
+
+# set secrets via: wrangler secret put JWT_SECRET
+# [vars]
+
+[[d1_databases]]
+binding = "KAGI_DB"
+database_name = "kagi-sessions"
+database_id = "93276d76-d4bc-47fb-afee-4bd6f29329c6"
+
+[[ratelimits]]
+name = "POW_LIMIT"
+namespace_id = "1101"
+simple = { limit = 20, period = 60 }
+
+[[ratelimits]]
+name = "API_LIMIT"
+namespace_id = "1102"
+simple = { limit = 60, period = 60 }

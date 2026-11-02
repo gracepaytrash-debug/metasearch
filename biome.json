@@ -1,0 +1,45 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.1/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/*.svg",
+      "!src/bangs-data.json",
+      "!public/assets/argon2.js",
+      "!public/assets/chart.js",
+      "!public/assets/fflate.min.js",
+      "!public/assets/map.js",
+      "!public/assets/qrcode.js",
+      "!public/assets/ort*.mjs",
+      "!public/assets/sugar-high.js",
+      "!public/assets/torph.js"
+    ]
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "a11y": {
+        "noAutofocus": "off"
+      },
+      "complexity": {
+        "noImportantStyles": "off"
+      },
+      "style": {
+        "noDescendingSpecificity": "off"
+      },
+      "suspicious": {
+        "noDocumentCookie": "off"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2
+  }
+}
